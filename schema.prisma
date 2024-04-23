@@ -1,0 +1,66 @@
+// datasource db defines the database connection settings.
+// It is configured for PostgreSQL and uses an environment variable for the connection URL.
+// The 'extensions' feature enables the use of PostgreSQL-specific data types.
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+}
+
+// generator db configures Prisma Client settings.
+// It is set up to use Prisma Client Python with asyncio interface and specific features.
+generator db {
+  provider             = "prisma-client-py"
+  interface            = "asyncio"
+  recursive_type_depth = 5
+  previewFeatures      = ["postgresqlExtensions"]
+}
+
+model User {
+  id           String       @id @default(dbgenerated("gen_random_uuid()"))
+  email        String       @unique
+  password     String
+  role         Role         @default(USER)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  EmojiQueries EmojiQuery[]
+  ApiKeys      ApiKey[]
+}
+
+model Emoji {
+  id           String       @id @default(dbgenerated("gen_random_uuid()"))
+  emojiChar    String       @unique
+  meaning      String
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  EmojiQueries EmojiQuery[]
+}
+
+model EmojiQuery {
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  emojiChar String
+  meaning   String?
+  UserId    String
+  EmojiId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  User  User  @relation(fields: [UserId], references: [id], onDelete: Cascade)
+  Emoji Emoji @relation(fields: [EmojiId], references: [id], onDelete: Cascade)
+}
+
+model ApiKey {
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  key       String   @unique
+  UserId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  User User @relation(fields: [UserId], references: [id], onDelete: Cascade)
+}
+
+enum Role {
+  USER
+  SUBSCRIBER
+  ADMIN
+}
+

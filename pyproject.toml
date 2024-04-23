@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "test"
+version = "0.1.0"
+description = "To create an endpoint that connects to GROQ and takes in an emoji as input to explain its meaning, you'll need to complete several steps leveraging the tech stack provided: Python for programming, FastAPI as the API framework, PostgreSQL as the database, and Prisma as the ORM."
+authors = ["AutoGPT <info@agpt.co>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.11"
+bcrypt = "^3.2.0"
+fastapi = "^0.79.0"
+httpx = "^0.21.3"
+prisma = "*"
+pydantic = "*"
+python-dotenv = "^0.20.0"
+uvicorn = "*"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
